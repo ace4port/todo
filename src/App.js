@@ -24,6 +24,7 @@ const App = () => {
     setColumns({ ...columns, [newColumn.id]: newColumn })
   }
 
+  false && setColumnOrder()
   return (
     <Main>
       <Heading>Todo list with drag and drop</Heading>
