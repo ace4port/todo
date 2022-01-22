@@ -1,10 +1,10 @@
 const initialData = {
-  tasks: {
-    'task-1': { id: 'task-1', content: 'Take out the trash', complete: false },
-    'task-2': { id: 'task-2', content: 'Watch my favorite show', complete: false },
-    'task-3': { id: 'task-3', content: 'Charge my phone', complete: false },
-    'task-4': { id: 'task-4', content: 'Cook dinner', complete: false },
-  },
+  tasks: [
+    { id: 'task-1', content: 'Take out the trash', complete: false },
+    { id: 'task-2', content: 'Watch my favorite show', complete: false },
+    { id: 'task-3', content: 'Charge my phone', complete: false },
+    { id: 'task-4', content: 'Cook dinner', complete: false },
+  ],
 
   columns: {
     'column-1': {

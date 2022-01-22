@@ -1,66 +1,95 @@
-import React, { useState, useRef, useEffect } from 'react'
-import TodoList from './TodoList'
-import { v4 as uuidv4 } from 'uuid'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { v4 as uuidv4 } from 'uuid'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
+import { Card, Scroll } from './TodoList'
 
 const LOCAL_STORAGE_KEY = 'todoApp.todos'
 
-const Todo = () => {
-  const todoNameRef = useRef()
-  const [todos, setTodos] = useState([])
+const TodoColumn = ({ column, columns, tasks, setTasks, setColumn }) => {
+  const [newTask, setNewTask] = useState('')
+
+  // TODO: load from local storage
+  // useEffect(() => {
+  //   const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
+  //   if (storedTodos) setTasks(storedTodos)
+  // }, [setTasks])
 
   useEffect(() => {
-    const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
-    if (storedTodos) setTodos(storedTodos)
-  }, [])
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
+  }, [tasks])
 
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos))
-  }, [todos])
-
-  function toggleTodo(id) {
-    const newTodos = [...todos]
-    const todo = newTodos.find((todo) => todo.id === id)
-    todo.complete = !todo.complete
-    setTodos(newTodos)
+  function toggleTask(id) {
+    const newTasks = [...tasks]
+    const task = newTasks.find((task) => task.id === id)
+    task.complete = !task.complete
+    setTasks([...newTasks])
   }
 
   function handleAddTodo(e) {
     e.preventDefault()
-    const name = todoNameRef.current.value
-    if (name === '') return
-    setTodos((prevTodos) => {
-      return [...prevTodos, { id: uuidv4(), name: name, complete: false }]
-    })
-    todoNameRef.current.value = null
+    const newId = uuidv4()
+    setTasks([...tasks, { id: newId, content: newTask, complete: false }])
+    setColumn({ ...columns, [column.id]: { ...column, taskIds: [newId, ...column.taskIds] } })
+    setNewTask('')
   }
 
-  function handleClearTodos() {
-    const newTodos = todos.filter((todo) => !todo.complete)
-    setTodos(newTodos)
+  function handleClearTasks() {
+    if (window.confirm('This will clear all completed tasks')) {
+      const newTasks = tasks.filter((task) => !task.complete)
+      setTasks(newTasks)
+      setColumn({ ...columns, [column.id]: { ...column, taskIds: newTasks.map((task) => task.id) } })
+    }
   }
 
   return (
-    <Container>
-      <AddTodo>
-        <input ref={todoNameRef} type='text' />
-        <Button type='submit' onClick={handleAddTodo}>
-          Add Todo
+    <Clm>
+      <h2>{column.title}</h2>
+      <Container>
+        <AddTodo>
+          <input value={newTask} onChange={(e) => setNewTask(e.target.value)} type='text' />
+          <Button type='submit' onClick={handleAddTodo}>
+            Add Todo
+          </Button>
+        </AddTodo>
+
+        <Droppable droppableId={column.id}>
+          {(provided) => (
+            <Scroll ref={provided.innerRef} {...provided.droppableProps}>
+              {tasks.map((task, index) => (
+                <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />
+              ))}
+              {provided.placeholder}
+            </Scroll>
+          )}
+        </Droppable>
+
+        <h4>{tasks.filter((task) => !task.complete).length} to-dos remaining</h4>
+
+        <Button onClick={handleClearTasks} className='btn'>
+          Clear Complete
         </Button>
-      </AddTodo>
-
-      <TodoList todos={todos} toggleTodo={toggleTodo} />
-
-      <h4>{todos.filter((todo) => !todo.complete).length} to-dos remaining</h4>
-
-      <Button onClick={handleClearTodos} className='btn'>
-        Clear Complete
-      </Button>
-    </Container>
+      </Container>
+    </Clm>
   )
 }
 
-export default Todo
+export default TodoColumn
+
+const Task = ({ task, index, toggleTask }) => {
+  return (
+    <Draggable draggableId={task.id} index={index}>
+      {(provided) => (
+        <Card {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+          <label>
+            <input type='checkbox' checked={task.complete} onChange={() => toggleTask(task.id)} />
+            {task.content}
+          </label>
+        </Card>
+      )}
+    </Draggable>
+  )
+}
 
 const Button = styled.button`
   padding: 0.5rem;
@@ -91,5 +120,21 @@ const AddTodo = styled.form`
     border: 1px solid #ccc;
     // border-radius: 3px;
     flex: 1;
+  }
+`
+
+const Clm = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin: 0.5rem;
+
+  label {
+    cursor: grab;
   }
 `
