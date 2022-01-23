@@ -47,9 +47,10 @@ export const Card = styled.div`
 
 export const Scroll = styled.div`
   padding 1rem 0.3rem 1rem 0;
-  overflow-y: auto;
-  max-height: calc(100vh - 25rem);
+  // overflow-y: auto;
+  // height: calc(100vh - 25rem);
   
   border: 1px solid #00f;
+  resize: vertical;
   border-radius: 3px;
 `

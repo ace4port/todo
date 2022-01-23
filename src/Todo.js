@@ -1,26 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import { Card, Scroll } from './TodoList'
 
-const LOCAL_STORAGE_KEY = 'todoApp.todos'
-
-const TodoColumn = ({ column, columns, tasks, setTasks, setColumn }) => {
+const TodoColumn = ({ column, columns, tasks, taskList, setTasks, setColumn, index }) => {
   const [newTask, setNewTask] = useState('')
 
-  // TODO: load from local storage
-  // useEffect(() => {
-  //   const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
-  //   if (storedTodos) setTasks(storedTodos)
-  // }, [setTasks])
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
-  }, [tasks])
-
   function toggleTask(id) {
-    const newTasks = [...tasks]
+    const newTasks = [...taskList]
     const task = newTasks.find((task) => task.id === id)
     task.complete = !task.complete
     setTasks([...newTasks])
@@ -29,7 +17,7 @@ const TodoColumn = ({ column, columns, tasks, setTasks, setColumn }) => {
   function handleAddTodo(e) {
     e.preventDefault()
     const newId = uuidv4()
-    setTasks([...tasks, { id: newId, content: newTask, complete: false }])
+    setTasks([...taskList, { id: newId, content: newTask, complete: false }])
     setColumn({ ...columns, [column.id]: { ...column, taskIds: [newId, ...column.taskIds] } })
     setNewTask('')
   }
@@ -37,40 +25,46 @@ const TodoColumn = ({ column, columns, tasks, setTasks, setColumn }) => {
   function handleClearTasks() {
     if (window.confirm('This will clear all completed tasks')) {
       const newTasks = tasks.filter((task) => !task.complete)
-      setTasks(newTasks)
+      setTasks([...taskList, newTasks])
       setColumn({ ...columns, [column.id]: { ...column, taskIds: newTasks.map((task) => task.id) } })
     }
   }
 
   return (
-    <Clm>
-      <h2>{column.title}</h2>
-      <Container>
-        <AddTodo>
-          <input value={newTask} onChange={(e) => setNewTask(e.target.value)} type='text' />
-          <Button type='submit' onClick={handleAddTodo}>
-            Add Todo
-          </Button>
-        </AddTodo>
+    <Draggable draggableId={column.id} index={index}>
+      {(provided) => (
+        <Clm {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+          <h2>{column.title}</h2>
+          <Container>
+            <Droppable droppableId={column.id}>
+              {(provided) => (
+                <Scroll ref={provided.innerRef} {...provided.droppableProps}>
+                  {!tasks.length ? (
+                    <h4>No tasks here ... </h4>
+                  ) : (
+                    tasks.map((task, index) => <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />)
+                  )}
+                  {provided.placeholder}
 
-        <Droppable droppableId={column.id}>
-          {(provided) => (
-            <Scroll ref={provided.innerRef} {...provided.droppableProps}>
-              {tasks.map((task, index) => (
-                <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />
-              ))}
-              {provided.placeholder}
-            </Scroll>
-          )}
-        </Droppable>
+                  <AddTodo>
+                    <input value={newTask} onChange={(e) => setNewTask(e.target.value)} type='text' />
+                    <Button type='submit' onClick={handleAddTodo}>
+                      Add Todo
+                    </Button>
+                  </AddTodo>
+                </Scroll>
+              )}
+            </Droppable>
 
-        <h4>{tasks.filter((task) => !task.complete).length} to-dos remaining</h4>
+            <h4>{tasks.filter((task) => !task.complete).length} to-dos remaining</h4>
 
-        <Button onClick={handleClearTasks} className='btn'>
-          Clear Complete
-        </Button>
-      </Container>
-    </Clm>
+            <Button onClick={handleClearTasks} className='btn'>
+              Clear Complete
+            </Button>
+          </Container>
+        </Clm>
+      )}
+    </Draggable>
   )
 }
 
@@ -81,7 +75,7 @@ const Task = ({ task, index, toggleTask }) => {
     <Draggable draggableId={task.id} index={index}>
       {(provided) => (
         <Card {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-          <label>
+          <label className={task.complete ? 'checked' : null}>
             <input type='checkbox' checked={task.complete} onChange={() => toggleTask(task.id)} />
             {task.content}
           </label>
@@ -129,10 +123,12 @@ const Clm = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
   padding: 0.5rem;
   border-radius: 5px;
   margin: 0.5rem;
+
+  cursor: grab;
+  border: 2px solid white;
 
   label {
     cursor: grab;
