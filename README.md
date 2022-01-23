@@ -1,6 +1,6 @@
 <h1 align="center">A Todo app with <code>Drag and Drop</code> built with React</h1>
 
-<div align="center">Auto formatted with Prettier, using UUID, React Beautiful Drag and Drop</div>
+<div align="center">Auto formatted with Prettier, using UUID, Styled Components React Beautiful Drag and Drop</div>
 
 <h3 align="center">
   <a href="https://https://gracious-jackson-c3ea90.netlify.app//">Visit the live app</a> |
@@ -17,9 +17,9 @@ I personally used the previous version to prioritize my work for months to keep 
 
 ## Features
 
-- Proven, scalable, and easy to understand project structure
 - Written in modern React, only functional components with hooks
 - Simple local React state management, without redux, mobx, or similar
+- Scalable, and easy to understand project structure
 - Persists data within browser
 
 ## Planned Features
