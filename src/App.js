@@ -40,10 +40,6 @@ function App() {
 
   return (
     <div className='container'>
-      <h1>
-        This is old version. Check out the newer version{' '}
-        <a href='https://https://gracious-jackson-c3ea90.netlify.app//'>Here</a>{' '}
-      </h1>
       <TodoList todos={todos} toggleTodo={toggleTodo} />
       <input ref={todoNameRef} type='text' />
       <br />
