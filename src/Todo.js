@@ -6,7 +6,7 @@ import { Card, Scroll } from './TodoList'
 
 const LOCAL_STORAGE_KEY = 'todoApp.todos'
 
-const TodoColumn = ({ column, columns, tasks, setTasks, setColumn }) => {
+const TodoColumn = ({ column, columns, tasks, setTasks, setColumn, index }) => {
   const [newTask, setNewTask] = useState('')
 
   // TODO: load from local storage
@@ -43,34 +43,38 @@ const TodoColumn = ({ column, columns, tasks, setTasks, setColumn }) => {
   }
 
   return (
-    <Clm>
-      <h2>{column.title}</h2>
-      <Container>
-        <AddTodo>
-          <input value={newTask} onChange={(e) => setNewTask(e.target.value)} type='text' />
-          <Button type='submit' onClick={handleAddTodo}>
-            Add Todo
-          </Button>
-        </AddTodo>
+    <Draggable draggableId={column.id} index={index}>
+      {(provided) => (
+        <Clm {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+          <h2>{column.title}</h2>
+          <Container>
+            <Droppable droppableId={column.id}>
+              {(provided) => (
+                <Scroll ref={provided.innerRef} {...provided.droppableProps}>
+                  {tasks.map((task, index) => (
+                    <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />
+                  ))}
+                  {provided.placeholder}
 
-        <Droppable droppableId={column.id}>
-          {(provided) => (
-            <Scroll ref={provided.innerRef} {...provided.droppableProps}>
-              {tasks.map((task, index) => (
-                <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />
-              ))}
-              {provided.placeholder}
-            </Scroll>
-          )}
-        </Droppable>
+                  <AddTodo>
+                    <input value={newTask} onChange={(e) => setNewTask(e.target.value)} type='text' />
+                    <Button type='submit' onClick={handleAddTodo}>
+                      Add Todo
+                    </Button>
+                  </AddTodo>
+                </Scroll>
+              )}
+            </Droppable>
 
-        <h4>{tasks.filter((task) => !task.complete).length} to-dos remaining</h4>
+            <h4>{tasks.filter((task) => !task.complete).length} to-dos remaining</h4>
 
-        <Button onClick={handleClearTasks} className='btn'>
-          Clear Complete
-        </Button>
-      </Container>
-    </Clm>
+            <Button onClick={handleClearTasks} className='btn'>
+              Clear Complete
+            </Button>
+          </Container>
+        </Clm>
+      )}
+    </Draggable>
   )
 }
 
@@ -81,7 +85,7 @@ const Task = ({ task, index, toggleTask }) => {
     <Draggable draggableId={task.id} index={index}>
       {(provided) => (
         <Card {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-          <label>
+          <label className={task.complete ? 'checked' : null}>
             <input type='checkbox' checked={task.complete} onChange={() => toggleTask(task.id)} />
             {task.content}
           </label>
@@ -129,10 +133,12 @@ const Clm = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #fff;
   padding: 0.5rem;
   border-radius: 5px;
   margin: 0.5rem;
+
+  cursor: grab;
+  border: 2px solid white;
 
   label {
     cursor: grab;
