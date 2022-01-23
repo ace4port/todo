@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="description" content="To Do app with drag and Drop" />
     <title>To Do App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
     <style>
       .init-loader {
@@ -16,37 +19,37 @@
         justify-content: center;
         align-items: center;
       }
-    
+
       .rotate-45 {
         transform-origin: center;
         transform: rotate(45deg);
       }
-    
+
       .rotate {
         transform-origin: center;
         animation: init-rotate 1s ease-in-out infinite;
       }
-    
+
       .rotate-back {
         transform-origin: center;
         animation: init-rotate 1s ease-in-out infinite;
         animation-direction: reverse;
       }
-    
+
       .left {
         animation: init-move 1s ease-in-out infinite;
       }
-    
+
       .right {
         animation: init-move 1s ease-in-out infinite;
       }
-    
+
       @keyframes init-rotate {
         100% {
           transform: rotate(calc(90deg + 45deg));
         }
       }
-    
+
       @keyframes init-move {
         50% {
           transform: translate(-30px, -30px);
@@ -56,28 +59,61 @@
   </head>
   <body>
     <div id="root">
-<div class="init-loader">
-  <svg width="1000" height="1000" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" version="1.1"
-    xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g transform="translate(500,500)">
-      <rect class="rotate-45 rotate-back" x="-5" y="-5" width="10" height="10" stroke="black" stroke-width="20"
-        fill="none" />
-      <rect class="rotate-45 rotate" x="-50" y="-50" width="100" height="100" stroke="black" stroke-width="20"
-        stroke-linejoin="bevel" fill="none" />
-      <g transform="translate(-50,0) rotate(-45)">
-        <polyline class="left" points="40,-40 50,-50 -40,-50 -50,-40 -50,50 -40,40" stroke="black" stroke-width="20"
-          fill="none" />
-      </g>
-      <g transform="translate(50,0) rotate(135)">
-        <polyline class="right" points="40,-40 50,-50 -40,-50 -50,-40 -50,50 -40,40" stroke="black" stroke-width="20"
-          fill="none" />
-      </g>
-      <text y="-140" text-anchor="middle" font-weight="bold" font-size="3em" font-family="sans-serif">
-        loading...
-      </text>
-    </g>
-  </svg>
-</div>
+      <div class="init-loader">
+        <svg
+          width="1000"
+          height="1000"
+          viewBox="0 0 1000 1000"
+          xmlns="http://www.w3.org/2000/svg"
+          version="1.1"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+        >
+          <g transform="translate(500,500)">
+            <rect
+              class="rotate-45 rotate-back"
+              x="-5"
+              y="-5"
+              width="10"
+              height="10"
+              stroke="black"
+              stroke-width="20"
+              fill="none"
+            />
+            <rect
+              class="rotate-45 rotate"
+              x="-50"
+              y="-50"
+              width="100"
+              height="100"
+              stroke="black"
+              stroke-width="20"
+              stroke-linejoin="bevel"
+              fill="none"
+            />
+            <g transform="translate(-50,0) rotate(-45)">
+              <polyline
+                class="left"
+                points="40,-40 50,-50 -40,-50 -50,-40 -50,50 -40,40"
+                stroke="black"
+                stroke-width="20"
+                fill="none"
+              />
+            </g>
+            <g transform="translate(50,0) rotate(135)">
+              <polyline
+                class="right"
+                points="40,-40 50,-50 -40,-50 -50,-40 -50,50 -40,40"
+                stroke="black"
+                stroke-width="20"
+                fill="none"
+              />
+            </g>
+            <text y="-140" text-anchor="middle" font-weight="bold" font-size="3em" font-family="sans-serif">
+              loading...
+            </text>
+          </g>
+        </svg>
+      </div>
     </div>
   </body>
 </html>

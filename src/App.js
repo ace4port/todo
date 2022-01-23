@@ -1,26 +1,23 @@
 import { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import initialData from './initialData'
 
 import TodoColumn from './Todo'
-import initialData from './initialData'
+import { Main, Heading, FlexContainer, Modal, Question, Button } from './components'
 
 const LOCAL_STORAGE_KEY = 'todoApp.todos'
 const LOCAL_STORAGE_COLUMN = 'todoApp.columns'
 const LOCAL_STORAGE_COLUMN_ORDER = 'todoApp.column.order'
 
 const App = () => {
+  const [modal, setModal] = useState(!localStorage.getItem('not_first_time'))
   const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || initialData.tasks)
   const [columns, setColumns] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_COLUMN)) || initialData.columns)
   const [columnOrder, setColumnOrder] = useState(
     JSON.parse(localStorage.getItem(LOCAL_STORAGE_COLUMN_ORDER)) || initialData.columnOrder
   )
 
-  // TODO: load from local storage
-  // useEffect(
-  //   () => localStorage.getItem(LOCAL_STORAGE_KEY) && setTasks(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))),
-  //   [setTasks]
-  // )
+  useEffect(() => localStorage.setItem('not_first_time', true), [])
 
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
@@ -70,6 +67,18 @@ const App = () => {
   return (
     <Main>
       <Heading>Todo list with drag and drop</Heading>
+      <Question onClick={() => setModal(true)}>?</Question>
+      {modal && (
+        <Modal onClick={() => setModal(false)}>
+          <div className='contents'>
+            <h1>Welcome to Todo list app</h1>
+            <p>This is a simple todo list with drag and drop. You can drag and drop tasks between columns.</p>
+            <p>You may also rearrange the list columns by dragging their title.</p>
+            <p>Or by keyboard: press space to lift, arrow keys to move around within or among different columns</p>
+            <Button onClick={() => setModal(false)}>Got it!</Button>
+          </div>
+        </Modal>
+      )}
 
       <DragDropContext onDragEnd={drag}>
         <Droppable droppableId='all-columns' direction='horizontal' type='column'>
@@ -114,29 +123,3 @@ const InnerColumn = ({ column, tasks, index, columns, setColumns, setTasks }) =>
     />
   )
 }
-
-const Main = styled.main`
-  font: 16px 'Poppins', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: calc(100vh - 18px);
-  margin: 0;
-  padding: 0;
-  background-color: #d5d5d5;
-`
-
-const Heading = styled.h3`
-  font-size: 2.5rem;
-  font-weight: 700;
-`
-
-const FlexContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0;
-`
