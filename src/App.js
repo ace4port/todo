@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react'
 import TodoList from './TodoList'
 import uuidv4 from 'uuid/v4'
 
@@ -19,7 +19,7 @@ function App() {
 
   function toggleTodo(id) {
     const newTodos = [...todos]
-    const todo = newTodos.find(todo => todo.id === id)
+    const todo = newTodos.find((todo) => todo.id === id)
     todo.complete = !todo.complete
     setTodos(newTodos)
   }
@@ -27,26 +27,35 @@ function App() {
   function handleAddTodo(e) {
     const name = todoNameRef.current.value
     if (name === '') return
-    setTodos(prevTodos => {
-      return [...prevTodos, { id: uuidv4(), name: name, complete: false}]
+    setTodos((prevTodos) => {
+      return [...prevTodos, { id: uuidv4(), name: name, complete: false }]
     })
     todoNameRef.current.value = null
   }
 
   function handleClearTodos() {
-    const newTodos = todos.filter(todo => !todo.complete)
+    const newTodos = todos.filter((todo) => !todo.complete)
     setTodos(newTodos)
   }
 
   return (
     <div className='container'>
+      <h1>
+        This is old version. Check out the newer version{' '}
+        <a href='https://https://gracious-jackson-c3ea90.netlify.app//'>Here</a>{' '}
+      </h1>
       <TodoList todos={todos} toggleTodo={toggleTodo} />
-      <input ref={todoNameRef} type="text" /><br />
-      <button onClick={handleAddTodo} className='btn' >Add Todo</button>
-      <button onClick={handleClearTodos} className='btn'>Clear Complete</button>
-      <div className='item'>{todos.filter(todo => !todo.complete).length} left to do</div>
+      <input ref={todoNameRef} type='text' />
+      <br />
+      <button onClick={handleAddTodo} className='btn'>
+        Add Todo
+      </button>
+      <button onClick={handleClearTodos} className='btn'>
+        Clear Complete
+      </button>
+      <div className='item'>{todos.filter((todo) => !todo.complete).length} left to do</div>
     </div>
   )
 }
 
-export default App;
+export default App
