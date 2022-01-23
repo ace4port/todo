@@ -3,7 +3,7 @@
 <div align="center">Auto formatted with Prettier, using UUID, Styled Components React Beautiful Drag and Drop</div>
 
 <h3 align="center">
-  <a href="https://https://gracious-jackson-c3ea90.netlify.app//">Visit the live app</a> |
+  <a href="https://gracious-jackson-c3ea90.netlify.app/">Visit the live app</a> |
   <a href="https://p1-todo.netlify.app">View old version</a>
 </h3>
 
