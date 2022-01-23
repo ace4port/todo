@@ -1,15 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 
 import TodoColumn from './Todo'
 import initialData from './initialData'
-import { Droppable } from 'react-beautiful-dnd'
+
+const LOCAL_STORAGE_KEY = 'todoApp.todos'
+const LOCAL_STORAGE_COLUMN = 'todoApp.columns'
+const LOCAL_STORAGE_COLUMN_ORDER = 'todoApp.column.order'
 
 const App = () => {
-  const [tasks, setTasks] = useState(initialData.tasks)
-  const [columns, setColumns] = useState(initialData.columns)
-  const [columnOrder, setColumnOrder] = useState(initialData.columnOrder)
+  const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || initialData.tasks)
+  const [columns, setColumns] = useState(JSON.parse(localStorage.getItem(LOCAL_STORAGE_COLUMN)) || initialData.columns)
+  const [columnOrder, setColumnOrder] = useState(
+    JSON.parse(localStorage.getItem(LOCAL_STORAGE_COLUMN_ORDER)) || initialData.columnOrder
+  )
+
+  // TODO: load from local storage
+  // useEffect(
+  //   () => localStorage.getItem(LOCAL_STORAGE_KEY) && setTasks(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))),
+  //   [setTasks]
+  // )
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
+    localStorage.setItem(LOCAL_STORAGE_COLUMN, JSON.stringify(columns))
+    localStorage.setItem(LOCAL_STORAGE_COLUMN_ORDER, JSON.stringify(columnOrder))
+  }, [tasks, columns, columnOrder])
 
   const drag = (result) => {
     const { destination, source, draggableId, type } = result
@@ -27,12 +44,27 @@ const App = () => {
     }
 
     const selected_column = columns[source.droppableId]
-    const newTasks = [...selected_column.taskIds]
-    newTasks.splice(source.index, 1)
-    newTasks.splice(destination.index, 0, draggableId)
-    const newColumn = { ...selected_column, taskIds: newTasks }
+    const destination_column = columns[destination.droppableId]
 
-    setColumns({ ...columns, [newColumn.id]: newColumn })
+    if (selected_column === destination_column) {
+      const newTasks = [...selected_column.taskIds]
+      newTasks.splice(source.index, 1)
+      newTasks.splice(destination.index, 0, draggableId)
+      const newColumn = { ...selected_column, taskIds: newTasks }
+
+      setColumns({ ...columns, [newColumn.id]: newColumn })
+      return
+    }
+    // Moving from one column to another
+    const source_taskIds = [...selected_column.taskIds]
+    source_taskIds.splice(source.index, 1)
+    const new_src_column = { ...selected_column, taskIds: source_taskIds }
+
+    const destination_taskIds = [...destination_column.taskIds]
+    destination_taskIds.splice(destination.index, 0, draggableId)
+    const new_dest_column = { ...destination_column, taskIds: destination_taskIds }
+
+    setColumns({ ...columns, [new_src_column.id]: new_src_column, [new_dest_column.id]: new_dest_column })
   }
 
   return (
@@ -73,9 +105,9 @@ const InnerColumn = ({ column, tasks, index, columns, setColumns, setTasks }) =>
   return (
     <TodoColumn
       column={column}
-      // task={task}
       index={index}
       tasks={task}
+      taskList={tasks}
       setTasks={setTasks}
       columns={columns}
       setColumn={setColumns}

@@ -1,26 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import { Card, Scroll } from './TodoList'
 
-const LOCAL_STORAGE_KEY = 'todoApp.todos'
-
-const TodoColumn = ({ column, columns, tasks, setTasks, setColumn, index }) => {
+const TodoColumn = ({ column, columns, tasks, taskList, setTasks, setColumn, index }) => {
   const [newTask, setNewTask] = useState('')
 
-  // TODO: load from local storage
-  // useEffect(() => {
-  //   const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY))
-  //   if (storedTodos) setTasks(storedTodos)
-  // }, [setTasks])
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks))
-  }, [tasks])
-
   function toggleTask(id) {
-    const newTasks = [...tasks]
+    const newTasks = [...taskList]
     const task = newTasks.find((task) => task.id === id)
     task.complete = !task.complete
     setTasks([...newTasks])
@@ -29,7 +17,7 @@ const TodoColumn = ({ column, columns, tasks, setTasks, setColumn, index }) => {
   function handleAddTodo(e) {
     e.preventDefault()
     const newId = uuidv4()
-    setTasks([...tasks, { id: newId, content: newTask, complete: false }])
+    setTasks([...taskList, { id: newId, content: newTask, complete: false }])
     setColumn({ ...columns, [column.id]: { ...column, taskIds: [newId, ...column.taskIds] } })
     setNewTask('')
   }
@@ -37,7 +25,7 @@ const TodoColumn = ({ column, columns, tasks, setTasks, setColumn, index }) => {
   function handleClearTasks() {
     if (window.confirm('This will clear all completed tasks')) {
       const newTasks = tasks.filter((task) => !task.complete)
-      setTasks(newTasks)
+      setTasks([...taskList, newTasks])
       setColumn({ ...columns, [column.id]: { ...column, taskIds: newTasks.map((task) => task.id) } })
     }
   }
@@ -51,9 +39,11 @@ const TodoColumn = ({ column, columns, tasks, setTasks, setColumn, index }) => {
             <Droppable droppableId={column.id}>
               {(provided) => (
                 <Scroll ref={provided.innerRef} {...provided.droppableProps}>
-                  {tasks.map((task, index) => (
-                    <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />
-                  ))}
+                  {!tasks.length ? (
+                    <h4>No tasks here ... </h4>
+                  ) : (
+                    tasks.map((task, index) => <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />)
+                  )}
                   {provided.placeholder}
 
                   <AddTodo>
