@@ -30,11 +30,15 @@ const TodoColumn = ({ column, columns, tasks, taskList, setTasks, setColumn, ind
     }
   }
 
+  const complete = tasks.length - tasks.filter((task) => !task.complete).length
+
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided) => (
         <Clm {...provided.draggableProps} ref={provided.innerRef}>
-          <h2 {...provided.dragHandleProps}>{column.title}</h2>
+          <h2 {...provided.dragHandleProps}>
+            {column.title} <em>{tasks.length}</em>
+          </h2>
           <Droppable droppableId={column.id}>
             {(provided) => (
               <Scroll ref={provided.innerRef} {...provided.droppableProps}>
@@ -44,27 +48,25 @@ const TodoColumn = ({ column, columns, tasks, taskList, setTasks, setColumn, ind
                   tasks.map((task, index) => <Task key={task.id} index={index} task={task} toggleTask={toggleTask} />)
                 )}
                 {provided.placeholder}
-
-                <AddTodo>
-                  <input
-                    value={newTask}
-                    onChange={(e) => setNewTask(e.target.value)}
-                    placeholder='New Todo'
-                    type='text'
-                  />
-                  <Button type='submit' onClick={handleAddTodo}>
-                    Add Todo
-                  </Button>
-                </AddTodo>
               </Scroll>
             )}
           </Droppable>
 
-          <h4>{tasks.filter((task) => !task.complete).length} to-dos remaining</h4>
-
-          <Button onClick={handleClearTasks} className='btn'>
-            Clear Complete
-          </Button>
+          <div className='bot'>
+            <AddTodo>
+              <input value={newTask} onChange={(e) => setNewTask(e.target.value)} placeholder='New Todo' type='text' />
+            </AddTodo>
+            <Button type='submit' onClick={handleAddTodo}>
+              Add Todo
+            </Button>
+            {complete ? (
+              <Button onClick={handleClearTasks} style={{ backgroundColor: 'maroon' }}>
+                Delete {tasks.length - tasks.filter((task) => !task.complete).length} Complete tasks
+              </Button>
+            ) : (
+              complete + ' tasks completed'
+            )}
+          </div>
         </Clm>
       )}
     </Draggable>

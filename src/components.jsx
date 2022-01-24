@@ -1,74 +1,79 @@
 import styled from 'styled-components'
 
-export const Button = styled.button`
-  padding: 0.5rem;
-  border: 1px solid #00000000;
-  border-radius: 3px;
-  font-size: 1rem;
-  color: white;
-  background-color: #e60076;
-`
-
-export const Clm = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-  border-radius: 5px;
-  border: 2px solid white;
-  background-color: #a3d3d3;
-  h2 {
-    margin: 0;
-  }
-`
-export const Scroll = styled.div`
-  resize: vertical;
-  border-radius: 3px;
-  padding: 0.5rem;
-
-  .active {
-    background-color: #e675a0;
-  }
-
-  height: 350px;
-  width: 300px;
-  overflow-y: auto;
+export const Heading = styled.h3`
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #7600e6;
+  background-color: #fff;
 `
 
 export const Main = styled.main`
   font: 16px 'Poppins', sans-serif;
   margin: 0;
-  padding: 0 0 1rem;
   background-color: #d5d5d5;
-`
-
-export const Heading = styled.h3`
-  font-size: 2.2rem;
-  font-weight: 600;
-  text-align: center;
-  margin: 0;
-  padding: 1rem;
-  color: #7600e6;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 1rem);
 `
 
 export const FlexContainer = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: flex-start;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
   gap: 1rem;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+  }
+
+  padding: 1rem;
+  margin: 0;
+  background-color: #75a0e6;
+`
+
+export const Clm = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 1rem;
+  border-radius: 3px;
+  background-color: #a3d3d3;
+  h2 {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    em {
+      font-size: 1rem;
+      color: #7600e6;
+      align-self: center;
+    }
+  }
+  .bot {
+    justify-self: end;
+  }
+`
+export const Scroll = styled.div`
+  padding: 0.5rem;
+  border-radius: 3px;
+  .active {
+    background-color: #00e676;
+  }
+  min-width: 250px;
+  max-height: 380px;
+  overflow-y: auto;
 `
 
 export const Item = styled.div`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 3px;
   background-color: white;
+  border-radius: 3px;
   margin: 0.5rem 0;
 
   label {
+    border-radius: 3px;
     transition: all 0.5s ease-in-out;
     background-color: #7600e6;
     display: block;
@@ -97,6 +102,16 @@ export const AddTodo = styled.form`
     padding: 0.5rem;
     flex: 1;
   }
+`
+
+export const Button = styled.button`
+  padding: 0.5rem;
+  margin: 0.5rem;
+  border: 1px solid #00000000;
+  border-radius: 3px;
+  font-size: 1rem;
+  color: white;
+  background-color: #e60076;
 `
 
 export const Modal = styled.div`

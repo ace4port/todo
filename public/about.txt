@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Puppies Play
+- Font Author: Copyright 2009-2021 The Puppies Play Project Authors (https://github.com/googlefonts/puppies-play)
+- Font Source: http://fonts.gstatic.com/s/puppiesplay/v3/wlp2gwHZEV99rG6M3NR9uB9vaAJSA_JN3Q.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))

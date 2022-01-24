@@ -66,7 +66,7 @@ const App = () => {
 
   return (
     <Main>
-      <Heading>Todo list with drag and drop</Heading>
+      <Heading>Drag and drop to-do list</Heading>
       <Question onClick={() => setModal(true)}>?</Question>
       {modal && (
         <Modal onClick={() => setModal(false)}>
